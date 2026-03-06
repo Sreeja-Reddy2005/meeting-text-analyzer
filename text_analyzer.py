@@ -1,21 +1,18 @@
+import streamlit as st
 import ollama
 
 def analyze_text(text):
 
     prompt = f"""
-Read the following meeting text and extract:
+You are an AI assistant.
 
-1. Summary
-2. Action Items (as bullet points)
-3. Key Decisions (as bullet points)
-
-Text:
-{text}
+Read the notes and extract the information.
 
 Return output exactly in this format:
 
 Summary:
-...
+Write a detailed summary of the meeting in 4–5 sentences explaining what was discussed.
+
 
 Action Items:
 - item1
@@ -24,6 +21,9 @@ Action Items:
 Key Decisions:
 - decision1
 - decision2
+
+Meeting Notes:
+{text}
 """
 
     response = ollama.chat(
@@ -34,12 +34,16 @@ Key Decisions:
     return response["message"]["content"]
 
 
-text = """
-In today's meeting the team discussed launching the new mobile application by July.
-The marketing team will prepare the promotional campaign.
-John will coordinate with developers for final testing.
-It was decided that the beta version will be released next month.
-Budget approval was confirmed for marketing activities.
-"""
+st.title("AI  Analyzer")
 
-print(analyze_text(text))
+text = st.text_area("Paste Text")
+
+if st.button("Analyze"):
+    if text:
+        with st.spinner("Analyzing  ..."):
+            result = analyze_text(text)
+        st.write(result)
+    else:
+        st.warning("Please enter text")
+
+
